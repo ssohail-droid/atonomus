@@ -1,0 +1,85 @@
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.DcMotor;
+
+
+@Autonomous(name = "Autonomous", group = "Examples" )
+
+
+public class SingleMotorControl extends LinearOpMode {
+
+
+   public DcMotor front_Left = null;
+   public DcMotor back_Left = null;
+   public DcMotor front_Right = null;
+   public DcMotor back_Right = null;
+
+
+   @Override
+   public void runOpMode() throws InterruptedException {
+       // Initialize the motor
+       this.front_Left = hardwareMap.get(DcMotor.class, "front_Left");
+       this.back_Left = hardwareMap.get(DcMotor.class, "back_Left");
+       this.front_Right = hardwareMap.get(DcMotor.class, "front_Right");
+       this.back_Right = hardwareMap.get(DcMotor.class, "back_Right");
+
+
+       waitForStart();
+
+
+       // Reset the motor's encoder
+       front_Left.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+       back_Left.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+       front_Right.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+       back_Right.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+
+       // Set the target position
+       int targetPosition0 =201;
+       int targetPosition1 = 1429;
+       int targetPosition2 = -1429;
+       int targetPosition3 = -1429;
+
+
+
+
+       // Set the target position for the motor
+       front_Left.setTargetPosition(targetPosition0);
+       back_Left.setTargetPosition(targetPosition1);
+       front_Right.setTargetPosition(targetPosition2);
+       back_Right.setTargetPosition(targetPosition3);
+
+
+       // Set the motor to run to the target position
+       front_Left.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+       back_Left.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+       front_Right.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+       back_Right.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+
+       // Set the power for the motor to start moving
+       front_Left.setPower(0.3);
+       back_Left.setPower(0.3);
+       front_Right.setPower(-0.3);
+       back_Right.setPower(-0.3);
+
+
+       // Wait until the motor reaches the target position
+       while (front_Left.isBusy() || back_Left.isBusy() || front_Right.isBusy() || back_Right.isBusy() ) {
+           // You can monitor the progress here
+           telemetry.addData("Current Position", front_Left.getCurrentPosition());
+           telemetry.addData("Current Position", back_Left.getCurrentPosition());
+           telemetry.addData("Current Position", front_Right.getCurrentPosition());
+           telemetry.addData("Current Position", back_Right.getCurrentPosition());
+           telemetry.update();
+       }
+
+
+       // Stop the motor once the target position is reached
+       front_Left.setPower(0);
+
+
+       // Optionally, reset the encoder again if needed
+       front_Left.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+   }
+}
